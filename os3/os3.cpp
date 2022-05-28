@@ -1,111 +1,101 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+
+using namespace std;
 
 const int MaxParts = 10;  //最大分区数
-const int Memsize = 4096; //存储大小
+const int Memsize = 1024; //存储大小
 
-typedef enum Bool
+struct Part //分区信息
 {
-    false = 0,
-    true,
-} boolean;
+    int startAddress; //开始地址
+    int length;       //分区长度
+    bool free;        //是否空闲
+    Part *next;       //下一个分区
+};
 
-typedef struct Part //分区信息
+struct Distribution //分配信息
 {
-    int startAddress;  //开始地址
-    int length;        //分区长度
-    boolean free;      //是否空闲
-    struct Part *next; //下一个分区
-} Part;
-
-typedef struct Distribution //分配信息
-{
-    boolean give;  //是否给予空间
+    bool give;     //是否给予空间
     Part *part;    //分配的空间
     int errorType; //错误类型 0 无 1 分区数超限 2 请求不能满足
-} Distribution;
+};
 
-Part part;
-int cnt;
+Part partFirst;
+int countPart;
 
 void init()
 { //初始化
-    part.startAddress = 0;
-    part.length = Memsize;
-    part.free = true;
-    part.next = NULL;
-    cnt = 1;
+    partFirst.startAddress = 0;
+    partFirst.length = Memsize;
+    partFirst.free = true;
+    partFirst.next = NULL;
+    countPart = 1;
 }
 
 /**
- * @brief 请求内存空间
- *
- * @param length 请求的长度
+ * 请求内存空间
+ * @length 请求的长度
  */
 Distribution requestMemory(int length)
 {
-    boolean can = false;
-    Part *distriPart = NULL;
+    bool can = false;
+    Part *disPart = NULL;
     int errorType = 0;
-    Part *temp = &part;
+    Part *temp = &partFirst;
     do
     {
         if (temp->free && temp->length >= length)
         { //如果空闲且大于则分配新分区
-            if (cnt + 1 > MaxParts)
+            if (countPart + 1 > MaxParts)
             { //到达最大分区限制则分配
                 errorType = 1;
                 break;
             }
             else
-                cnt++;
-
+            {
+                countPart++;
+            }
             temp->free = false;
             int tempLength = temp->length;
             temp->length = length;
-
-            // 把选中的分区划分一部分满足请求,另外一部分插入到其后面
+            //把选中的分区划分一部分满足请求,另外一部分插入到其后面
             Part *tempNext = temp->next;
-
-            temp->next = (Part *)malloc(sizeof(Part));
-            temp->next->free = true;
-            temp->next->length = tempLength - length;
-            temp->next->startAddress = temp->startAddress + temp->length;
-            temp->next->next = tempNext;
-
-            distriPart = temp;
+            temp->next = new Part{
+                temp->startAddress + temp->length,
+                tempLength - length,
+                true,
+                tempNext};
+            disPart = temp;
             can = true;
             break;
         }
         else if (temp->free && temp->length == length)
-        {
-            //空闲且等于请求大小则直接分配
+        { //空闲且等于请求大小则直接分配
             temp->free = false;
-            distriPart = temp;
+            disPart = temp;
             can = true;
             break;
         }
         else
+        {
             temp = temp->next;
-
+        }
     } while (temp != NULL);
-    errorType = 0;
+    errorType = 2;
 
-    Distribution res = {.give = can, .part = distriPart, .errorType = errorType};
+    Distribution res = {can, disPart, errorType};
 
     return res;
 }
-
 /**
- * @brief 释放分区
- *
- * @param n 显示的第n个分区
+ * 释放分区
+ * @id 显示的第n个分区
  */
 void freePart(int n)
 {
     int i = 1;
-    Part *temp = &part;
-    boolean is_free = false;
+    Part *temp = &partFirst;
+    bool free = false;
     do
     {
         if (i + 1 == n && temp->next != NULL)
@@ -113,14 +103,14 @@ void freePart(int n)
             if (temp->next->next != NULL && temp->next->next->free == true)
             {
                 if (temp->free)
-                { // 三连
+                { //三连
                     Part *center = temp->next;
                     Part *right = temp->next->next;
                     Part *tempNext = temp->next->next->next;
                     temp->length += temp->next->length + temp->next->next->length;
                     temp->next = tempNext;
-                    free(center);
-                    free(right);
+                    delete center;
+                    delete right;
                 }
                 else
                 { //后连
@@ -129,7 +119,7 @@ void freePart(int n)
                     temp->next->length += temp->next->next->length;
                     temp->next->next = tempNext;
                     temp->next->free = true;
-                    free(right);
+                    delete right;
                 }
             }
             else
@@ -140,33 +130,29 @@ void freePart(int n)
                     Part *tempNext = temp->next->next;
                     temp->length += temp->next->length;
                     temp->next = tempNext;
-                    free(center);
+                    delete center;
                 }
                 else
                 { //独
                     temp->next->free = true;
                 }
             }
-            is_free = true;
+            free = true;
             break;
         }
         temp = temp->next;
         i++;
     } while (temp != NULL);
-    if (!is_free)
+    if (!free)
     {
         printf("释放失败,分区未找到.\n");
     }
 }
 
-/**
- * @brief 打印分区信息
- *
- */
 void showParts()
-{
+{ //打印分区信息
     int i = 1;
-    Part *temp = &part;
+    Part *temp = &partFirst;
     printf("分区号 开始地址 分区长度 空闲\n");
     do
     {
@@ -176,28 +162,24 @@ void showParts()
     } while (temp != NULL);
 }
 
-/**
- * @brief 主菜单
- *
- */
 void selectMenu()
 {
     int select;
     int value;
     Distribution ret;
-    boolean quit = false;
+    bool quit = false;
     while (!quit)
     {
-        printf("模拟存储管理\n");
+        printf("存储管理模拟\n");
         printf("1、申请空间\n");
         printf("2、释放空间\n");
-        printf("3、退出程序\n");
-        scanf("%d", &select);
+        printf("3、退出\n");
+        cin >> select;
         switch (select)
         {
         case 1:
             printf("请输入大小:\n");
-            scanf("%d", &value);
+            cin >> value;
             ret = requestMemory(value);
             if (ret.give)
             {
@@ -211,7 +193,7 @@ void selectMenu()
             break;
         case 2:
             printf("请输入序号:\n");
-            scanf("%d", &value);
+            cin >> value;
             freePart(value);
             break;
         case 3:
@@ -231,5 +213,5 @@ int main()
     showParts();
     selectMenu();
     getchar();
-    printf("退出成功");
+    return 0;
 }

@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat May 28 04:43:24 2022
+# Make data base, printed on Sat May 28 06:17:05 2022
 
 # Variables
 
@@ -45,7 +45,7 @@ GITHUB_GRAPHQL_URL = https://api.github.com/graphql
 # environment
 RUBY_HOME = /opt/ruby/lts
 # environment
-GITHUB_TOKEN = ghu_h94LKTNVKIDOmy3u9wNM5FkPJZOp1R3C4onp
+GITHUB_TOKEN = ghu_tivTLmU2IaI0ZAsUJRU57apE3sbz680Fwt0H
 # makefile
 MAKEFILE_LIST := 
 # environment
@@ -65,7 +65,7 @@ PATH = /vscode/bin/linux-x64/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote
 # environment
 DYNAMIC_INSTALL_ROOT_DIR = /opt
 # environment
-CLOUDENV_ENVIRONMENT_ID = fe76586c-6423-4f53-b0a2-5d20d309a7f5
+CLOUDENV_ENVIRONMENT_ID = ad2a11b8-8984-4c0d-aeb1-64da969c8308
 # environment
 ORYX_AI_INSTRUMENTATION_KEY = 4aadba6b-30c8-42db-9b93-024d5c62b887
 # environment
@@ -83,13 +83,13 @@ VSCODE_LOG_STACK = false
 # environment
 NUGET_XMLDOC_MODE = skip
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-1dd95cc7-8279-47a1-a2bc-47f74865c2dc.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-845d6f4a-f50e-4b71-992f-2a7fc7fd81c6.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
 CODESPACES = true
 # environment
-CODESPACE_NAME = yuzhi535-os-exam-56j7gpjg2476v
+CODESPACE_NAME = yuzhi535-os-exam-j6vpjwvj2j7w
 # automatic
 %F = $(notdir $%)
 # environment
@@ -131,7 +131,7 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
-HOSTNAME = codespaces-0143d4
+HOSTNAME = codespaces-03f887
 # environment
 ORYX_ENV_TYPE = vsonline-present
 # environment
@@ -151,7 +151,7 @@ JAVA_HOME = /opt/java/lts
 # default
 MAKE_VERSION := 4.2.1
 # environment
-GITHUB_CODESPACE_TOKEN = ANTMYDQF4VA6JA2CZ2XOTNDCSIWJRANCNFSM4ABRU7KA
+GITHUB_CODESPACE_TOKEN = ANTMYDX66M4MX76CWRKBFO3CSJSAXANCNFSM4ABRXOSQ
 # makefile
 .DEFAULT_GOAL := 
 # environment
@@ -167,6 +167,7 @@ MAKE_COMMAND := make
 # makefile
 MAKEFLAGS = pqrR
 # environment
+ 
 MFLAGS = -pqrR
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
@@ -201,7 +202,7 @@ LC_ALL = C
 # environment
 GIT_COMMITTER_NAME = GitHub
 # environment
-INTERNAL_VSCS_TARGET_URL = https://southeastasia.online.visualstudio.com
+INTERNAL_VSCS_TARGET_URL = https://westus2.online.visualstudio.com
 # environment
 GITHUB_REPOSITORY = yuzhi535/os-exam
 # automatic
@@ -280,7 +281,6 @@ GNUmakefile:
 #  Failed to be updated.
 
 # files hash-table stats:
- 
 # Load=6/1024=1%, Rehash=0, Collisions=0/15=0%
 # VPATH Search Paths
 
@@ -294,6 +294,6 @@ GNUmakefile:
 # strcache performance: lookups = 23 / hit rate = 13%
 # hash-table stats:
 # Load=20/8192=0%, Rehash=0, Collisions=1/23=4%
-# Finished Make data base on Sat May 28 04:43:24 2022
+# Finished Make data base on Sat May 28 06:17:05 2022
 
  
