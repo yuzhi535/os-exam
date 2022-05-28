@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
             sem_wait(full);
             sem_wait(mutex);
 
-            printf("son pid %d receive message:%s\n", getpid(), shm_buf);
+            printf ("son pid %d receive message:%s\n", getpid(), shm_buf);
             // 清空共享内存
             if (strncmp(shm_buf, "quit", 4) == 0)
             {

@@ -52,7 +52,6 @@ int main(int argc, char *argv[])
         read_file = fopen(path_in, "r");
     }
     printf("文件打开成功！\n");
-    // fclose(File_in);
 
     while (1)
     {

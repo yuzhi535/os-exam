@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# custom
+*/*_results
+c_results
