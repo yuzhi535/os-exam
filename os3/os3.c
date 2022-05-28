@@ -65,19 +65,14 @@ Quota requestMemory(int val)
             int tempLength = temp->length;
             temp->length = val;
 
-            // 把选中的分区划分一部分满足请求,另外一部分插入到其后面
-            Node *tempNext = temp->next;
+            if (temp->length < tempLength)
+            {
+                // 把选中的分区划分一部分满足请求,另外一部分插入到其后面
+                Node *tempNext = temp->next;
 
-            temp->next = (Node *)malloc(sizeof(Node));
-            temp->next->free = true;
-            temp->next->length = tempLength - val;
-            if (!temp->next->length) //如果要分配的空间正好等于空闲空间的大小，则直接更改该空闲空间即可
-            {
-                free(temp->next);
-                temp->next = tempNext;
-            }
-            else // 否则，则插入一个链表
-            {
+                temp->next = (Node *)malloc(sizeof(Node));
+                temp->next->free = true;
+                temp->next->length = tempLength - val;
                 temp->next->startAddress = temp->startAddress + temp->length;
                 temp->next->next = tempNext;
             }
