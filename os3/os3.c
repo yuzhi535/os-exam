@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const int MaxParts = 8;  //最大分区数
+const int MaxParts = 8;   //最大分区数
 const int Memsize = 4096; //存储大小
 
 typedef enum Bool
@@ -25,12 +25,12 @@ typedef struct Quota //分配信息
     int errorType; //错误类型 0 无 1 分区数超限 2 请求不能满足
 } Quota;
 
-Node* head;
+Node *head;
 int cnt;
 
 void init()
 { //初始化
-    head = (Node*)malloc(sizeof(Node));
+    head = (Node *)malloc(sizeof(Node));
     head->startAddress = 0;
     head->length = Memsize;
     head->free = true;
@@ -109,18 +109,26 @@ void freePart(int n)
     boolean is_free = false;
     do
     {
-        if (n==1) {
-            if (temp->next&& temp->next->free) {
+        if (n == 1)
+        {
+            if (temp->next && temp->next->free)
+            {
                 head = temp->next;
                 int length = temp->length;
                 free(temp);
                 temp = head;
-                temp->length+=length;
-                temp->startAddress-=length;
-            } else if (temp->next) {
-                temp->free=true;
-            } else {
-                printf("没有可删除的空间，操作失败\n");
+                temp->length += length;
+                is_free = true;
+                temp->startAddress -= length;
+            }
+            else if (temp->next)
+            {
+                temp->free = true;
+                is_free = true;
+            }
+            else
+            {
+                is_free = false;
             }
             break;
         }
@@ -129,7 +137,7 @@ void freePart(int n)
             if (temp->next->next != NULL && temp->next->next->free == true)
             {
                 if (temp->free)
-                { 
+                {
                     // 若两个节点都空闲
                     Node *center = temp->next;
                     Node *right = center->next;
@@ -140,7 +148,7 @@ void freePart(int n)
                     free(right);
                 }
                 else
-                { 
+                {
                     //若前面和后面都不空闲，则设置该节点为空闲即可，然后增加长度
                     Node *right = temp->next->next;
                     Node *tempNext = right->next;
@@ -154,7 +162,7 @@ void freePart(int n)
             else
             {
                 if (temp->free)
-                { 
+                {
                     //删除空闲节点并把长度加到上一个链表上
                     Node *center = temp->next;
                     Node *tempNext = center->next;
@@ -163,7 +171,7 @@ void freePart(int n)
                     free(center);
                 }
                 else
-                { 
+                {
                     // 若其前后不空闲
                     temp->next->free = true;
                 }
@@ -177,6 +185,10 @@ void freePart(int n)
     if (!is_free)
     {
         printf("释放失败,分区未找到.\n");
+    }
+    else
+    {
+        cnt -= 1;
     }
 }
 
