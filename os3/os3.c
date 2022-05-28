@@ -43,7 +43,7 @@ void init()
  *
  * @param length 请求的长度
  */
-Quota requestMemory(int length)
+Quota requestMemory(int val)
 {
     boolean can = false;
     Node *distriPart = NULL;
@@ -51,7 +51,7 @@ Quota requestMemory(int length)
     Node *temp = head;
     do
     {
-        if (temp->free && temp->length >= length)
+        if (temp->free && temp->length >= val)
         { //如果空闲且大于则分配新分区
             if (cnt + 1 > MaxParts)
             { //到达最大分区限制则分配
@@ -63,22 +63,30 @@ Quota requestMemory(int length)
 
             temp->free = false;
             int tempLength = temp->length;
-            temp->length = length;
+            temp->length = val;
 
             // 把选中的分区划分一部分满足请求,另外一部分插入到其后面
             Node *tempNext = temp->next;
 
             temp->next = (Node *)malloc(sizeof(Node));
             temp->next->free = true;
-            temp->next->length = tempLength - length;
-            temp->next->startAddress = temp->startAddress + temp->length;
-            temp->next->next = tempNext;
+            temp->next->length = tempLength - val;
+            if (!temp->next->length) //如果要分配的空间正好等于空闲空间的大小，则直接更改该空闲空间即可
+            {
+                free(temp->next);
+                temp->next = tempNext;
+            }
+            else // 否则，则插入一个链表
+            {
+                temp->next->startAddress = temp->startAddress + temp->length;
+                temp->next->next = tempNext;
+            }
 
             distriPart = temp;
             can = true;
             break;
         }
-        else if (temp->free && temp->length == length)
+        else if (temp->free && temp->length == val)
         {
             //空闲且等于请求大小则直接分配
             temp->free = false;
