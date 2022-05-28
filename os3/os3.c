@@ -10,30 +10,31 @@ typedef enum Bool
     true,
 } boolean;
 
-typedef struct Part //分区信息
+typedef struct Node //分区信息
 {
     int startAddress;  //开始地址
     int length;        //分区长度
     boolean free;      //是否空闲
-    struct Part *next; //下一个分区
-} Part;
+    struct Node *next; //下一个分区
+} Node;
 
 typedef struct Distribution //分配信息
 {
     boolean give;  //是否给予空间
-    Part *part;    //分配的空间
+    Node *part;    //分配的空间
     int errorType; //错误类型 0 无 1 分区数超限 2 请求不能满足
 } Distribution;
 
-Part part;
+Node* head;
 int cnt;
 
 void init()
 { //初始化
-    part.startAddress = 0;
-    part.length = Memsize;
-    part.free = true;
-    part.next = NULL;
+    head = (Node*)malloc(sizeof(Node));
+    head->startAddress = 0;
+    head->length = Memsize;
+    head->free = true;
+    head->next = NULL;
     cnt = 1;
 }
 
@@ -45,9 +46,9 @@ void init()
 Distribution requestMemory(int length)
 {
     boolean can = false;
-    Part *distriPart = NULL;
+    Node *distriPart = NULL;
     int errorType = 0;
-    Part *temp = &part;
+    Node *temp = head;
     do
     {
         if (temp->free && temp->length >= length)
@@ -65,9 +66,9 @@ Distribution requestMemory(int length)
             temp->length = length;
 
             // 把选中的分区划分一部分满足请求,另外一部分插入到其后面
-            Part *tempNext = temp->next;
+            Node *tempNext = temp->next;
 
-            temp->next = (Part *)malloc(sizeof(Part));
+            temp->next = (Node *)malloc(sizeof(Node));
             temp->next->free = true;
             temp->next->length = tempLength - length;
             temp->next->startAddress = temp->startAddress + temp->length;
@@ -104,29 +105,45 @@ Distribution requestMemory(int length)
 void freePart(int n)
 {
     int i = 1;
-    Part *temp = &part;
+    Node *temp = head;
     boolean is_free = false;
     do
     {
-        if (i + 1 == n && temp->next != NULL)
+        if (n==1) {
+            if (temp->next) {
+                head = temp->next;
+                int length = temp->length;
+                free(temp);
+                temp = head;
+                temp->length+=length;
+                temp->startAddress-=length;
+            } else {
+                printf("没有可删除的空间，操作失败\n");
+            }
+            break;
+        }
+        else if (i + 1 == n && temp->next != NULL)
         {
             if (temp->next->next != NULL && temp->next->next->free == true)
             {
                 if (temp->free)
-                { // 三连
-                    Part *center = temp->next;
-                    Part *right = temp->next->next;
-                    Part *tempNext = temp->next->next->next;
-                    temp->length += temp->next->length + temp->next->next->length;
+                { 
+                    // 若两个节点都空闲
+                    Node *center = temp->next;
+                    Node *right = center->next;
+                    Node *tempNext = right->next;
+                    temp->length += center->length + right->length;
                     temp->next = tempNext;
                     free(center);
                     free(right);
                 }
                 else
-                { //后连
-                    Part *right = temp->next->next;
-                    Part *tempNext = temp->next->next->next;
-                    temp->next->length += temp->next->next->length;
+                { 
+                    //若前面和后面都不空闲，则设置该节点为空闲即可，然后增加长度
+                    Node *right = temp->next->next;
+                    Node *tempNext = right->next;
+                    temp->next->length += right->length;
+
                     temp->next->next = tempNext;
                     temp->next->free = true;
                     free(right);
@@ -135,15 +152,17 @@ void freePart(int n)
             else
             {
                 if (temp->free)
-                { //前连
-                    Part *center = temp->next;
-                    Part *tempNext = temp->next->next;
-                    temp->length += temp->next->length;
+                { 
+                    //删除空闲节点并把长度加到上一个链表上
+                    Node *center = temp->next;
+                    Node *tempNext = center->next;
+                    temp->length += center->length;
                     temp->next = tempNext;
                     free(center);
                 }
                 else
-                { //独
+                { 
+                    // 若其前后不空闲
                     temp->next->free = true;
                 }
             }
@@ -166,7 +185,7 @@ void freePart(int n)
 void showParts()
 {
     int i = 1;
-    Part *temp = &part;
+    Node *temp = head;
     printf("分区号 开始地址 分区长度 空闲\n");
     do
     {
@@ -184,7 +203,7 @@ void selectMenu()
 {
     int select;
     int value;
-    Distribution ret;
+    Distribution res;
     boolean quit = false;
     while (!quit)
     {
@@ -196,17 +215,17 @@ void selectMenu()
         switch (select)
         {
         case 1:
-            printf("请输入大小:\n");
+            printf("请输入申请的空间大小:\n");
             scanf("%d", &value);
-            ret = requestMemory(value);
-            if (ret.give)
+            res = requestMemory(value);
+            if (res.give)
             {
                 printf("分配成功.\n");
             }
             else
             {
                 printf("分配失败.\n");
-                printf("%s.\n", ret.errorType == 1 ? "分区数达到限制" : "该请求目前不能被满足");
+                printf("%s.\n", res.errorType == 1 ? "分区数达到限制" : "该请求目前不能被满足");
             }
             break;
         case 2:
