@@ -19,9 +19,9 @@ function read_c_files() {
 			echo $fp >>$i"_results"
 
 			#统计字符串个数，使用正则表达式
-			let "temp=`grep -o "[^0-9a-zA-Z_]$i[( ]" $fp | wc -l`" 
+			let "temp=`grep -o "[^0-9a-zA-Z_]$i\s*(" $fp | wc -l`" 
 			# 第二种方法
-			# let "temp=`grep -c "[^0-9a-zA-Z_]$i[(| ]" $fp`"
+			# let "temp=`grep -c "[^0-9a-zA-Z_]$i\s*(" $fp`"
 
 			echo "$temp" >> "${i}_results"
 			let "sum+=temp" #字符串个数求和
@@ -32,7 +32,7 @@ function read_c_files() {
 		echo "$i: $sum" >>"final_results"
 	done
 
-	mv "final_results" ../c_results
+	mv "final_results" c_results
 }
 
 read_c_files $1

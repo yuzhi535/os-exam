@@ -1,12 +1,12 @@
-#include <stdio.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/wait.h>
 #include <semaphore.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
 
 #define BUFFERSIZE 4096
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     // 得到共享内存地址
     if ((shm_buf = shmat(shm_id, 0, 0)) < (char *)0)
     {
-        perror("shm_buf error\n");
+        perror("shm_buf err\n");
         exit(1);
     }
 
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     int pid = fork();
     if (pid < 0)
     {
-        perror("pid error\n");
+        perror("pid err\n");
     }
 
     else if (pid == 0)
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
             sem_wait(full);
             sem_wait(mutex);
 
-            printf ("son pid %d receive message:%s\n", getpid(), shm_buf);
+            printf  ("子进程 pid %d 收到消息:%s\n", getpid(), shm_buf);
             // 清空共享内存
             if (strncmp(shm_buf, "quit", 4) == 0)
             {
@@ -56,11 +56,11 @@ int main(int argc, char *argv[])
             }
             strcpy(shm_buf, "");
 
-            // semaphore +1
+            // V 操作
             sem_post(mutex);
             sem_post(empty);
-        } // while
-    }     // else if
+        }
+    }
     else
     {
         while (1)
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
             sem_wait(full);
             sem_wait(mutex);
 
-            printf("parent pid %d receive message:%s\n", getpid(), shm_buf);
+            printf("父进程 pid %d 收到消息:%s\n", getpid(), shm_buf);
             // 清空共享内存
             if (strncmp(shm_buf, "quit", 4) == 0)
             {

@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat May 28 06:17:05 2022
+# Make data base, printed on Sat May 28 11:39:03 2022
 
 # Variables
 
@@ -45,7 +45,7 @@ GITHUB_GRAPHQL_URL = https://api.github.com/graphql
 # environment
 RUBY_HOME = /opt/ruby/lts
 # environment
-GITHUB_TOKEN = ghu_tivTLmU2IaI0ZAsUJRU57apE3sbz680Fwt0H
+GITHUB_TOKEN = ghu_kc4OoQpZ94aEltX2lguqfaNoeWdb6m2YhoWh
 # makefile
 MAKEFILE_LIST := 
 # environment
@@ -83,7 +83,7 @@ VSCODE_LOG_STACK = false
 # environment
 NUGET_XMLDOC_MODE = skip
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-845d6f4a-f50e-4b71-992f-2a7fc7fd81c6.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-1793915d-263e-4c46-812f-3237b6644934.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -151,7 +151,7 @@ JAVA_HOME = /opt/java/lts
 # default
 MAKE_VERSION := 4.2.1
 # environment
-GITHUB_CODESPACE_TOKEN = ANTMYDX66M4MX76CWRKBFO3CSJSAXANCNFSM4ABRXOSQ
+GITHUB_CODESPACE_TOKEN = ANTMYDWEUSHME6XDMKXK2ULCSKOF5ANCNFSM4ABRXOSQ
 # makefile
 .DEFAULT_GOAL := 
 # environment
@@ -167,7 +167,6 @@ MAKE_COMMAND := make
 # makefile
 MAKEFLAGS = pqrR
 # environment
- 
 MFLAGS = -pqrR
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
@@ -236,9 +235,9 @@ ContainerVersion = 12
 
 # Directories
 
-# . (device 1792, inode 1310870): 12 files, no impossibilities.
+# . (device 1792, inode 1310870): 11 files, no impossibilities.
 
-# 12 files, no impossibilities in 1 directories.
+# 11 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -286,14 +285,15 @@ GNUmakefile:
 
 # No 'vpath' search paths.
 
+ 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 20 / storage = 158 B / avg = 7 B
-# current buf: size = 8162 B / used = 158 B / count = 20 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 19 / storage = 148 B / avg = 7 B
+# current buf: size = 8162 B / used = 148 B / count = 19 / avg = 7 B
 
-# strcache performance: lookups = 23 / hit rate = 13%
+# strcache performance: lookups = 22 / hit rate = 13%
 # hash-table stats:
-# Load=20/8192=0%, Rehash=0, Collisions=1/23=4%
-# Finished Make data base on Sat May 28 06:17:05 2022
+# Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
+# Finished Make data base on Sat May 28 11:39:03 2022
 
  

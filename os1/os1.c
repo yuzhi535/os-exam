@@ -7,7 +7,6 @@
 #include <semaphore.h>
 #include <sys/time.h>
 
-#define BILLION 1E9
 #define N 5
 
 sem_t chopsticks[N]; //设置5种信号量，有5种不同类型的资源，每一种有1个,这样便于理解，因为每个哲学家需要的资源不同
@@ -16,7 +15,7 @@ int philosophers[N] = {0, 1, 2, 3, 4}; //代表5个哲学家的编号
 
 int eat_times[5];
 
-struct timeval start, end;
+struct timeval start;
 
 void delay(int sec)
 {
@@ -25,6 +24,7 @@ void delay(int sec)
 
 void *philosopher(void *arg)
 {
+    struct timeval end;
     int i = *(int *)arg;
     int left = i;            //左筷子的编号和哲学家的编号相同
     int right = (i + 1) % N; //右筷子的编号为哲学家编号+1
@@ -36,13 +36,13 @@ void *philosopher(void *arg)
             delay(5);
 
             printf("哲学家%d饿了\n", i);
-            sem_wait(&chopsticks[right]); //P操作，下同。此时这个哲学家左筷子的信号量-1之后>=0时，表示能继续执行。
+            sem_wait(&chopsticks[right]); // P操作，下同。此时这个哲学家左筷子的信号量-1之后>=0时，表示能继续执行。
             printf("哲学家%d拿起了%d号筷子,现在只有一支筷子,不能进餐\n", i, right);
             sem_wait(&chopsticks[left]);
             printf("哲学家%d拿起了%d号筷子, 现在有两支筷子,开始进餐\n", i, left);
             eat_times[i] += 1;
             delay(3);
-            sem_post(&chopsticks[left]);  // V操作。下同
+            sem_post(&chopsticks[left]); // V操作。下同
             printf("哲学家%d放下了%d号筷子\n", i, left);
             sem_post(&chopsticks[right]);
             printf("哲学家%d放下了%d号筷子\n", i, right);

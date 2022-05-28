@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const int MaxParts = 10;  //最大分区数
+const int MaxParts = 8;  //最大分区数
 const int Memsize = 4096; //存储大小
 
 typedef enum Bool
@@ -18,12 +18,12 @@ typedef struct Node //分区信息
     struct Node *next; //下一个分区
 } Node;
 
-typedef struct Distribution //分配信息
+typedef struct Quota //分配信息
 {
     boolean give;  //是否给予空间
     Node *part;    //分配的空间
     int errorType; //错误类型 0 无 1 分区数超限 2 请求不能满足
-} Distribution;
+} Quota;
 
 Node* head;
 int cnt;
@@ -43,7 +43,7 @@ void init()
  *
  * @param length 请求的长度
  */
-Distribution requestMemory(int length)
+Quota requestMemory(int length)
 {
     boolean can = false;
     Node *distriPart = NULL;
@@ -92,7 +92,7 @@ Distribution requestMemory(int length)
     } while (temp != NULL);
     errorType = 0;
 
-    Distribution res = {.give = can, .part = distriPart, .errorType = errorType};
+    Quota res = {.give = can, .part = distriPart, .errorType = errorType};
 
     return res;
 }
@@ -110,13 +110,15 @@ void freePart(int n)
     do
     {
         if (n==1) {
-            if (temp->next) {
+            if (temp->next&& temp->next->free) {
                 head = temp->next;
                 int length = temp->length;
                 free(temp);
                 temp = head;
                 temp->length+=length;
                 temp->startAddress-=length;
+            } else if (temp->next) {
+                temp->free=true;
             } else {
                 printf("没有可删除的空间，操作失败\n");
             }
@@ -186,10 +188,10 @@ void showParts()
 {
     int i = 1;
     Node *temp = head;
-    printf("分区号 开始地址 分区长度 空闲\n");
+    printf("分区号 是否空闲 起始地址 分区长度\n");
     do
     {
-        printf("%-6d %-8d %-8d %-4s\n", i, temp->startAddress, temp->length, temp->free ? "是" : "否");
+        printf("%-6d %-9s %-8d %-8d \n", i, temp->free ? "是" : "否", temp->startAddress, temp->length);
         temp = temp->next;
         i++;
     } while (temp != NULL);
@@ -203,7 +205,7 @@ void selectMenu()
 {
     int select;
     int value;
-    Distribution res;
+    Quota res;
     boolean quit = false;
     while (!quit)
     {
@@ -211,6 +213,7 @@ void selectMenu()
         printf("1、申请空间\n");
         printf("2、释放空间\n");
         printf("3、退出程序\n");
+        printf("您的输入是: ");
         scanf("%d", &select);
         switch (select)
         {
