@@ -12,7 +12,7 @@ typedef enum boolean
 
 typedef struct Node //分区信息
 {
-    int start_address;  //开始地址
+    int start_address; //开始地址
     int length;        //分区长度
     boolean free;      //是否空闲
     struct Node *next; //下一个分区
@@ -20,8 +20,8 @@ typedef struct Node //分区信息
 
 typedef struct Quota //分配信息
 {
-    boolean give;  //是否给予空间
-    Node *quota;    //分配的空间
+    boolean give; //是否给予空间
+    Node *quota;  //分配的空间
     int err_type; //错误类型 0 无 1 分区数超限 2 请求不能满足
 } Quota;
 
@@ -55,12 +55,10 @@ Quota request_memory(int val)
         if (temp->free && temp->length > val)
         { //如果空闲且大于则分配新分区
             if (cnt + 1 > MaxParts)
-            { //到达最大分区限制则分配
+            { //如果到达最大分区数且不满足其中空闲分区的长度，则会限制分配
                 flag = false;
                 temp = temp->next;
                 continue;
-                // err_type = 1;
-                // break;
             }
             else
                 cnt++;
