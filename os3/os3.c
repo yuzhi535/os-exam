@@ -48,15 +48,19 @@ Quota requestMemory(int val)
     boolean can = false;
     Node *distriPart = NULL;
     int errorType = 0;
+    boolean flag = true;
     Node *temp = head;
     do
     {
-        if (temp->free && temp->length >= val)
+        if (temp->free && temp->length > val)
         { //如果空闲且大于则分配新分区
             if (cnt + 1 > MaxParts)
             { //到达最大分区限制则分配
-                errorType = 1;
-                break;
+                flag = false;
+                temp = temp->next;
+                continue;
+                // errorType = 1;
+                // break;
             }
             else
                 cnt++;
@@ -84,6 +88,10 @@ Quota requestMemory(int val)
         else if (temp->free && temp->length == val)
         {
             //空闲且等于请求大小则直接分配
+
+            if (!flag)
+                flag = true;
+
             temp->free = false;
             distriPart = temp;
             can = true;
@@ -94,7 +102,8 @@ Quota requestMemory(int val)
 
     } while (temp != NULL);
     errorType = 0;
-
+    if (!flag)
+        errorType = 1;
     Quota res = {.give = can, .part = distriPart, .errorType = errorType};
 
     return res;
@@ -177,6 +186,7 @@ void freePart(int n)
                 {
                     // 若其前后不空闲
                     temp->next->free = true;
+                    cnt += 1;
                 }
             }
             is_free = true;
