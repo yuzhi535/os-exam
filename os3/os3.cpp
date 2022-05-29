@@ -91,7 +91,7 @@ Distribution requestMemory(int length)
  * 释放分区
  * @id 显示的第n个分区
  */
-void freePart(int n)
+void free_quota(int n)
 {
     int i = 1;
     Part *temp = &partFirst;
@@ -194,7 +194,7 @@ void selectMenu()
         case 2:
             printf("请输入序号:\n");
             cin >> value;
-            freePart(value);
+            free_quota(value);
             break;
         case 3:
             quit = true;

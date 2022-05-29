@@ -43,7 +43,7 @@ void init()
  *
  * @param length 请求的长度
  */
-Quota requestMemory(int val)
+Quota request_memory(int val)
 {
     boolean can = false;
     Node *distriPart = NULL;
@@ -114,7 +114,7 @@ Quota requestMemory(int val)
  *
  * @param n 显示的第n个分区
  */
-void freePart(int n)
+void free_quota(int n)
 {
     int i = 1;
     Node *temp = head;
@@ -245,7 +245,7 @@ void menu()
         case 1:
             printf("请输入申请的空间大小:\n");
             scanf("%d", &value);
-            res = requestMemory(value);
+            res = request_memory(value);
             if (res.give)
             {
                 printf("分配成功.\n");
@@ -259,7 +259,7 @@ void menu()
         case 2:
             printf("请输入序号:\n");
             scanf("%d", &value);
-            freePart(value);
+            free_quota(value);
             break;
         case 3:
             quit = true;
