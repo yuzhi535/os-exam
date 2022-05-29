@@ -4,7 +4,7 @@
 const int MaxParts = 8;   //最大分区数
 const int Memsize = 4096; //存储大小
 
-typedef enum Bool
+typedef enum boolean
 {
     false = 0,
     true,
@@ -12,7 +12,7 @@ typedef enum Bool
 
 typedef struct Node //分区信息
 {
-    int startAddress;  //开始地址
+    int start_address;  //开始地址
     int length;        //分区长度
     boolean free;      //是否空闲
     struct Node *next; //下一个分区
@@ -21,8 +21,8 @@ typedef struct Node //分区信息
 typedef struct Quota //分配信息
 {
     boolean give;  //是否给予空间
-    Node *part;    //分配的空间
-    int errorType; //错误类型 0 无 1 分区数超限 2 请求不能满足
+    Node *quota;    //分配的空间
+    int err_type; //错误类型 0 无 1 分区数超限 2 请求不能满足
 } Quota;
 
 Node *head;
@@ -31,7 +31,7 @@ int cnt;
 void init()
 { //初始化
     head = (Node *)malloc(sizeof(Node));
-    head->startAddress = 0;
+    head->start_address = 0;
     head->length = Memsize;
     head->free = true;
     head->next = NULL;
@@ -46,8 +46,8 @@ void init()
 Quota request_memory(int val)
 {
     boolean if_give = false;
-    Node *distriPart = NULL;
-    int errorType = 0;
+    Node *distri_quota = NULL;
+    int err_type = 0;
     boolean flag = true;
     Node *temp = head;
     do
@@ -59,7 +59,7 @@ Quota request_memory(int val)
                 flag = false;
                 temp = temp->next;
                 continue;
-                // errorType = 1;
+                // err_type = 1;
                 // break;
             }
             else
@@ -77,11 +77,11 @@ Quota request_memory(int val)
                 temp->next = (Node *)malloc(sizeof(Node));
                 temp->next->free = true;
                 temp->next->length = tempLength - val;
-                temp->next->startAddress = temp->startAddress + temp->length;
+                temp->next->start_address = temp->start_address + temp->length;
                 temp->next->next = tempNext;
             }
 
-            distriPart = temp;
+            distri_quota = temp;
             if_give = true;
             break;
         }
@@ -93,7 +93,7 @@ Quota request_memory(int val)
                 flag = true;
 
             temp->free = false;
-            distriPart = temp;
+            distri_quota = temp;
             if_give = true;
             break;
         }
@@ -101,10 +101,10 @@ Quota request_memory(int val)
             temp = temp->next;
 
     } while (temp != NULL);
-    errorType = 0;
+    err_type = 0;
     if (!flag)
-        errorType = 1;
-    Quota res = {.give = if_give, .part = distriPart, .errorType = errorType};
+        err_type = 1;
+    Quota res = {.give = if_give, .quota = distri_quota, .err_type = err_type};
 
     return res;
 }
@@ -131,7 +131,7 @@ void free_quota(int n)
                 temp = head;
                 temp->length += length;
                 is_free = true;
-                temp->startAddress -= length;
+                temp->start_address -= length;
             }
             else if (temp->next)
             {
@@ -216,7 +216,7 @@ void show()
     printf("分区号 是否空闲 起始地址 分区长度\n");
     do
     {
-        printf("%-6d %-9s %-8d %-8d \n", i, temp->free ? "是" : "否", temp->startAddress, temp->length);
+        printf("%-6d %-9s %-8d %-8d \n", i, temp->free ? "是" : "否", temp->start_address, temp->length);
         temp = temp->next;
         i++;
     } while (temp != NULL);
@@ -253,7 +253,7 @@ void menu()
             else
             {
                 printf("分配失败.\n");
-                printf("%s.\n", res.errorType == 1 ? "分区数达到限制" : "该请求目前不能被满足");
+                printf("%s.\n", res.err_type == 1 ? "分区数达到限制" : "该请求目前不能被满足");
             }
             break;
         case 2:

@@ -50,6 +50,7 @@
         "fstream": "c",
         "queue": "c",
         "sstream": "c",
-        "cinttypes": "c"
+        "cinttypes": "c",
+        "cassert": "c"
     }
 }
