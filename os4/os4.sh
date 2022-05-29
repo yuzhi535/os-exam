@@ -1,38 +1,40 @@
 #!/usr/bin/env bash
 
-# 创建结果文件夹
-if [ ! -d "c_results" ]; then
-	mkdir -p c_results
-fi
-
 declare -a arr=("printf" "open" "close" "read" "write" "fork" "signal") # 声明变量为数组类型
 
-function read_c_files() {
-	for i in ${arr[@]}; do #遍历字符串
-		local sum=0
+# 创建结果文件夹
+if [ ! -d "c_results" ]; then
+    mkdir -p c_results
+fi
 
-		#找到该目录下所有的c文件
-		for fp in $(
-			find $1 -type f -name "*.c"
-		); do
-
-			echo $fp >>$i"_results"
-
-			#统计字符串个数，使用正则表达式
-			let "temp=`grep -o "[^0-9a-zA-Z_]$i\s*(" $fp | wc -l`" 
-			# 第二种方法
-			# let "temp=`grep -c "[^0-9a-zA-Z_]$i\s*(" $fp`"
-
-			echo "$temp" >> "${i}_results"
-			let "sum+=temp" #字符串个数求和
-		done
-		echo "总出现次数：$sum" >>$i"_results"
-		echo "$i总出现次数: $sum"
-		mv $i"_results" c_results #转移到c_result目录下
-		echo "$i: $sum" >>"final_results"
-	done
-
-	mv "final_results" c_results
+function getNum() {
+    local ret=0
+    # 第一种方法 使用grep自带的参数
+    let "ret=$(grep -c "[^0-9a-zA-Z_]$1\s*(" $2)"
+    # 或者
+    # let "ret=`grep -c "[^0-9a-zA-Z_]$1\s*(" $2`"
+    # 第二种方法
+    # let "ret=`grep -o "[^0-9a-zA-Z_]$1\s*(" $2  | wc -l`"
+    return $ret
 }
 
-read_c_files $1
+function main() {
+    for var in ${arr[@]}; do
+        local sum=0
+        for file in $(ls $1/*.c); do
+            echo "$file 文件" >>$var"_results"
+
+            getNum $var $file
+            let "temp=$?"
+            echo "$temp" >>"${var}_results"
+            let "sum+=temp"
+        done
+        echo "总出现次数：$sum" >>$var"_results"
+        echo "$var总出现次数: $sum"
+        mv $var"_results" c_results #转移到c_result目录下
+        echo "$var: $sum" >>"final_results"
+    done
+    mv "final_results" c_results
+}
+
+main $1
