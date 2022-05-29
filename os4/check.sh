@@ -8,8 +8,11 @@ if [ ! -d "c_results" ]; then
 fi
 
 function getNum() {
+    local ret=0
     # 第一种方法 使用grep自带的参数
     let "ret=$(grep -c "[^0-9a-zA-Z_]$1\s*(" $2)"
+    # 或者
+    # let "ret=`grep -c "[^0-9a-zA-Z_]$1\s*(" $2`"
     # 第二种方法
     # let "ret=`grep -o "[^0-9a-zA-Z_]$1\s*(" $2  | wc -l`"
     return $ret
@@ -17,7 +20,7 @@ function getNum() {
 
 function main() {
     for var in ${arr[@]}; do
-        sum=0
+        local sum=0
         for file in $(ls $1/*.c); do
             echo "$file 文件" >>$var"_results"
 
