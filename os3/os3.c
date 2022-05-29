@@ -45,7 +45,7 @@ void init()
  */
 Quota request_memory(int val)
 {
-    boolean can = false;
+    boolean if_give = false;
     Node *distriPart = NULL;
     int errorType = 0;
     boolean flag = true;
@@ -82,7 +82,7 @@ Quota request_memory(int val)
             }
 
             distriPart = temp;
-            can = true;
+            if_give = true;
             break;
         }
         else if (temp->free && temp->length == val)
@@ -94,7 +94,7 @@ Quota request_memory(int val)
 
             temp->free = false;
             distriPart = temp;
-            can = true;
+            if_give = true;
             break;
         }
         else
@@ -104,7 +104,7 @@ Quota request_memory(int val)
     errorType = 0;
     if (!flag)
         errorType = 1;
-    Quota res = {.give = can, .part = distriPart, .errorType = errorType};
+    Quota res = {.give = if_give, .part = distriPart, .errorType = errorType};
 
     return res;
 }
@@ -228,8 +228,8 @@ void show()
  */
 void menu()
 {
-    int select;
-    int value;
+    int selected;
+    int val;
     Quota res;
     boolean quit = false;
     while (!quit)
@@ -239,13 +239,13 @@ void menu()
         printf("2、释放空间\n");
         printf("3、退出程序\n");
         printf("您的输入是: ");
-        scanf("%d", &select);
-        switch (select)
+        scanf("%d", &selected);
+        switch (selected)
         {
         case 1:
             printf("请输入申请的空间大小:\n");
-            scanf("%d", &value);
-            res = request_memory(value);
+            scanf("%d", &val);
+            res = request_memory(val);
             if (res.give)
             {
                 printf("分配成功.\n");
@@ -258,8 +258,8 @@ void menu()
             break;
         case 2:
             printf("请输入序号:\n");
-            scanf("%d", &value);
-            free_quota(value);
+            scanf("%d", &val);
+            free_quota(val);
             break;
         case 3:
             quit = true;
