@@ -209,7 +209,7 @@ void freePart(int n)
  * @brief 打印分区信息
  *
  */
-void showParts()
+void show()
 {
     int i = 1;
     Node *temp = head;
@@ -226,7 +226,7 @@ void showParts()
  * @brief 主菜单
  *
  */
-void selectMenu()
+void menu()
 {
     int select;
     int value;
@@ -268,15 +268,15 @@ void selectMenu()
             break;
         }
         if (!quit)
-            showParts();
+            show();
     }
 }
 
 int main()
 {
     init();
-    showParts();
-    selectMenu();
+    show();
+    menu();
     getchar();
     printf("退出成功");
 }
